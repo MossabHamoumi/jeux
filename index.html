@@ -418,29 +418,31 @@ function checkAnswer(btn, choice) {
     if (b.dataset.val === correct) b.classList.add("correct");
   });
 
+  index++;
+  const total = shuffled.length;
+  const nextLabel = index >= total ? "Voir le résultat →" : "Suivante →";
+
   if (choice === correct) {
     score++;
     feedback.className = "feedback show ok";
-    feedback.innerHTML = `✅ Bonne réponse ! &nbsp;|&nbsp; <span style="font-weight:400">${q.explication}</span>`;
+    feedback.innerHTML = `✅ Bonne réponse ! &nbsp;|&nbsp; <span style="font-weight:400">${q.explication}</span><br><button class="btn btn-primary" style="margin-top:12px" onclick="nextQuestion()">${nextLabel}</button>`;
   } else {
     btn.classList.add("wrong");
     feedback.className = "feedback show bad";
-    feedback.innerHTML = `❌ Mauvaise réponse ! La bonne réponse est : <strong>${correct}</strong><br><span style="font-weight:400">${q.explication}</span>`;
+    feedback.innerHTML = `❌ Mauvaise réponse ! La bonne réponse est : <strong>${correct}</strong><br><span style="font-weight:400">${q.explication}</span><br><button class="btn btn-primary" style="margin-top:12px" onclick="nextQuestion()">${nextLabel}</button>`;
   }
+}
 
-  index++;
+function nextQuestion() {
   const total = shuffled.length;
-
-  setTimeout(() => {
-    if (index >= total) {
-      showResult(total);
-    } else {
-      document.getElementById("game").classList.remove("card-anim");
-      void document.getElementById("game").offsetWidth;
-      document.getElementById("game").classList.add("card-anim");
-      render();
-    }
-  }, 2000);
+  if (index >= total) {
+    showResult(total);
+  } else {
+    document.getElementById("game").classList.remove("card-anim");
+    void document.getElementById("game").offsetWidth;
+    document.getElementById("game").classList.add("card-anim");
+    render();
+  }
 }
 
 /* ══════════════════════════════════════════
