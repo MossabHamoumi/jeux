@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jeux de Français 🇫🇷</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0f0f1a;
+    color: #fff;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .container { max-width: 780px; margin: auto; }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 30px 0 20px;
+  }
+  header h1 {
+    font-size: 2.4rem;
+    background: linear-gradient(135deg, #a855f7, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  header p { color: #8899aa; font-size: 0.95rem; }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    flex: 1;
+    min-width: 140px;
+    padding: 12px 10px;
+    background: #1e1e30;
+    border: 2px solid #2d2d45;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #8899aa;
+    transition: all 0.2s;
+  }
+  .tab:hover { border-color: #7c3aed; color: #fff; }
+  .tab.active { background: #2d1b4e; border-color: #a855f7; color: #fff; }
+  .tab.active.green { background: #0a2918; border-color: #10b981; }
+  .tab.active.blue  { background: #0a1e30; border-color: #38bdf8; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #1e1e30;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #a855f7, #38bdf8);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-label { font-size: 0.85rem; color: #8899aa; white-space: nowrap; }
+
+  /* ── CARD ── */
+  .card {
+    background: #16213e;
+    border: 1px solid #2d2d45;
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  /* ── SCORE BAR ── */
+  .score-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .score-pill {
+    background: #1e1e30;
+    border: 1px solid #2d2d45;
+    border-radius: 99px;
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffd700;
+  }
+  .category-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a855f7;
+  }
+
+  /* ── QUESTION ── */
+  .q-box {
+    background: #0f0f1a;
+    border: 1px solid #2d2d45;
+    border-radius: 14px;
+    padding: 22px 20px;
+    margin-bottom: 24px;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .q-box p {
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.5;
+    color: #f0f0ff;
+  }
+
+  /* ── CHOICES ── */
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    width: 100%;
+    padding: 14px 20px;
+    background: #1e1e30;
+    border: 2px solid #2d2d45;
+    border-radius: 12px;
+    color: #d0d8f0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s;
+    position: relative;
+  }
+  .choice-btn:hover:not(:disabled) {
+    border-color: #7c3aed;
+    background: #2a1a4e;
+    color: #fff;
+    transform: translateX(4px);
+  }
+  .choice-btn.correct {
+    background: #064e3b;
+    border-color: #10b981;
+    color: #fff;
+  }
+  .choice-btn.wrong {
+    background: #450a0a;
+    border-color: #ef4444;
+    color: #fff;
+  }
+  .choice-btn:disabled { cursor: default; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    margin-top: 18px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: #064e3b; border: 1px solid #10b981; color: #6ee7b7; }
+  .feedback.bad { background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; }
+
+  /* ── RESULT SCREEN ── */
+  .result-screen {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .result-screen .trophy { font-size: 5rem; margin-bottom: 16px; }
+  .result-screen h2 { font-size: 1.8rem; margin-bottom: 8px; }
+  .result-screen .final-score {
+    font-size: 3.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 16px 0;
+  }
+  .result-screen p { color: #8899aa; margin-bottom: 24px; }
+  .result-screen .rating { font-size: 1.1rem; color: #a855f7; font-weight: 700; margin-bottom: 20px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-block;
+    padding: 13px 30px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #7c3aed, #38bdf8);
+    color: #fff;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .card-anim { animation: fadeIn 0.3s ease; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 500px) {
+    header h1 { font-size: 1.7rem; }
+    .card { padding: 22px 16px; }
+    .q-box p { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🇫🇷 Jeux de Français</h1>
+    <p>Entraîne-toi avec les émotions et la grammaire !</p>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" id="tab-grammaire" onclick="switchGame('grammaire')">🎯 Futur / Impératif</div>
+    <div class="tab" id="tab-emotions"   onclick="switchGame('emotions')">🎭 Émotions</div>
+
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-label" id="progress-label">0 / 0</div>
+  </div>
+
+  <div class="card card-anim" id="game"></div>
+
+</div>
+
+<script>
+const jeux = {
+
+  /* ══════════════════════════════════════════
+     PARTIE 1 — GRAMMAIRE
+  ══════════════════════════════════════════ */
+  grammaire: {
+    titre: "Futur proche ou Impératif ?",
+    options: ["Futur proche", "Impératif"],
+    category: "Grammaire",
+    questions: [
+      { texte: "Nous allons danser ce soir.", reponse: "Futur proche", explication: "aller (allons) + infinitif = futur proche ✔" },
+      { texte: "Mange ta soupe !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Je vais téléphoner à maman.", reponse: "Futur proche", explication: "aller (vais) + infinitif = futur proche ✔" },
+      { texte: "Finis ton travail !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Vous allez voyager.", reponse: "Futur proche", explication: "aller (allez) + infinitif = futur proche ✔" },
+      { texte: "Va dormir maintenant !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Je vais acheter du pain.", reponse: "Futur proche", explication: "aller (vais) + infinitif = futur proche ✔" },
+      { texte: "Regarde le tableau !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Ils vont apprendre le français.", reponse: "Futur proche", explication: "aller (vont) + infinitif = futur proche ✔" },
+      { texte: "Attends ici !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Elle va lire un livre.", reponse: "Futur proche", explication: "aller (va) + infinitif = futur proche ✔" },
+      { texte: "Écoute la chanson !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Nous allons cuisiner ensemble.", reponse: "Futur proche", explication: "aller (allons) + infinitif = futur proche ✔" },
+      { texte: "Parle plus fort !", reponse: "Impératif", explication: "Conseil / ordre direct = impératif ✔" },
+      { texte: "Tu vas étudier ce soir.", reponse: "Futur proche", explication: "aller (vas) + infinitif = futur proche ✔" },
+      { texte: "Donne-moi le crayon !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Il va réparer la voiture.", reponse: "Futur proche", explication: "aller (va) + infinitif = futur proche ✔" },
+      { texte: "Ouvre la fenêtre !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Je vais boire un café.", reponse: "Futur proche", explication: "aller (vais) + infinitif = futur proche ✔" },
+      { texte: "Ferme la porte !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Nous allons finir le projet.", reponse: "Futur proche", explication: "aller (allons) + infinitif = futur proche ✔" },
+      { texte: "Prends une photo !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Je vais écrire une lettre.", reponse: "Futur proche", explication: "aller (vais) + infinitif = futur proche ✔" },
+      { texte: "Arrête la musique !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Ils vont déménager en juin.", reponse: "Futur proche", explication: "aller (vont) + infinitif = futur proche ✔" },
+      { texte: "Aide-moi !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "Elle va cuisiner pour la famille.", reponse: "Futur proche", explication: "aller (va) + infinitif = futur proche ✔" },
+      { texte: "Écris ton nom ici !", reponse: "Impératif", explication: "Ordre direct sans pronom sujet = impératif ✔" },
+      { texte: "On va regarder un film.", reponse: "Futur proche", explication: "aller (va) + infinitif = futur proche ✔" },
+      { texte: "Levez-vous !", reponse: "Impératif", explication: "Ordre poli (forme vous) = impératif ✔" },
+      { texte: "Je vais appeler le médecin.", reponse: "Futur proche", explication: "aller (vais) + infinitif = futur proche ✔" },
+      { texte: "Répétez après moi !", reponse: "Impératif", explication: "Instruction au groupe = impératif ✔" },
+    ]
+  },
+
+  /* ══════════════════════════════════════════
+     PARTIE 2 — ÉMOTIONS
+  ══════════════════════════════════════════ */
+  emotions: {
+    titre: "Devine l'émotion",
+    options: ["Calme 😌", "Colère 😡", "Joie 😊", "Tristesse 😢", "Peur 😨", "Surprise 😲"],
+    category: "Émotions",
+    questions: [
+      { texte: "J'ai gagné au loto !", reponse: "Joie 😊", explication: "Gagner de l'argent rend heureux → la joie ✔" },
+      { texte: "Mon chat est mort.", reponse: "Tristesse 😢", explication: "Perdre quelqu'un qu'on aime → la tristesse ✔" },
+      { texte: "Le voisin fait du bruit à 3h du matin !", reponse: "Colère 😡", explication: "Une situation injuste ou agaçante → la colère ✔" },
+      { texte: "Je regarde les nuages passer.", reponse: "Calme 😌", explication: "Être tranquille et serein → le calme ✔" },
+      { texte: "J'ai réussi mon examen !", reponse: "Joie 😊", explication: "Un succès rend heureux → la joie ✔" },
+      { texte: "On a cassé ma voiture sans rien dire.", reponse: "Colère 😡", explication: "Une injustice → la colère ✔" },
+      { texte: "Je fais du yoga, je suis détendu.", reponse: "Calme 😌", explication: "Le yoga apaise → le calme ✔" },
+      { texte: "Ce film est très triste. Je pleure.", reponse: "Tristesse 😢", explication: "Les larmes = la tristesse ✔" },
+      { texte: "Je reçois un cadeau surprise !", reponse: "Surprise 😲", explication: "Quelque chose d'inattendu → la surprise ✔" },
+      { texte: "Je dois parler devant toute la classe.", reponse: "Peur 😨", explication: "Le trac, l'anxiété = la peur ✔" },
+      { texte: "Je bois un thé chaud en silence.", reponse: "Calme 😌", explication: "Un moment paisible → le calme ✔" },
+      { texte: "Mon meilleur ami part vivre loin.", reponse: "Tristesse 😢", explication: "Une séparation difficile → la tristesse ✔" },
+      { texte: "Nous avons gagné le match !", reponse: "Joie 😊", explication: "La victoire rend heureux → la joie ✔" },
+      { texte: "Il casse toujours mes affaires !", reponse: "Colère 😡", explication: "Une situation répétée et injuste → la colère ✔" },
+      { texte: "Je regarde la mer tranquillement.", reponse: "Calme 😌", explication: "La mer apaise → le calme ✔" },
+      { texte: "Je me sens mélancolique aujourd'hui.", reponse: "Tristesse 😢", explication: "Mélancolique = un peu triste → la tristesse ✔" },
+      { texte: "J'entends un bruit bizarre la nuit.", reponse: "Peur 😨", explication: "L'inconnu fait peur → la peur ✔" },
+      { texte: "Mes amis organisent une fête pour moi !", reponse: "Surprise 😲", explication: "Une fête surprise → la surprise ✔" },
+      { texte: "Le patron crie sur tout le monde.", reponse: "Colère 😡", explication: "Crier = signe de colère ✔" },
+      { texte: "Je lis un livre dans mon jardin.", reponse: "Calme 😌", explication: "Un moment doux et tranquille → le calme ✔" },
+      { texte: "Mon équipe favorite a perdu.", reponse: "Tristesse 😢", explication: "Une défaite déçoit → la tristesse ✔" },
+      { texte: "Je vois un chien très mignon !", reponse: "Joie 😊", explication: "Un moment adorable → la joie ✔" },
+      { texte: "On sonne à la porte à minuit.", reponse: "Peur 😨", explication: "L'inattendu la nuit fait peur → la peur ✔" },
+      { texte: "J'apprends que j'ai un bébé qui arrive !", reponse: "Surprise 😲", explication: "Une grande nouvelle inattendue → la surprise ✔" },
+    ]
+  },
+
+};
+
+
+/* ══════════════════════════════════════════
+   ÉTAT DU JEU
+══════════════════════════════════════════ */
+let currentGame = "grammaire";
+let index = 0;
+let score = 0;
+let answered = false;
+let shuffled = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function switchGame(game) {
+  currentGame = game;
+  index = 0; score = 0; answered = false;
+  shuffled = shuffle(jeux[game].questions);
+
+  document.querySelectorAll(".tab").forEach(t => {
+    t.classList.remove("active", "green", "blue");
+  });
+  const tab = document.getElementById("tab-" + game);
+  tab.classList.add("active");
+  if (game === "emotions")   tab.classList.add("green");
+
+  render();
+}
+
+/* ══════════════════════════════════════════
+   RENDER
+══════════════════════════════════════════ */
+function render() {
+  const game = jeux[currentGame];
+  const total = shuffled.length;
+  const q = shuffled[index];
+  answered = false;
+
+  // Progress
+  const pct = Math.round((index / total) * 100);
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("progress-label").textContent = index + " / " + total;
+
+  // Options for this question
+  const opts = q.options || game.options;
+
+  let btns = opts.map(c =>
+    `<button class="choice-btn" onclick="checkAnswer(this,'${c.replace(/'/g, "\\'")}')" data-val="${c}">${c}</button>`
+  ).join("");
+
+  document.getElementById("game").innerHTML = `
+    <div class="score-bar">
+      <div class="category-badge">${game.category}</div>
+      <div class="score-pill">⭐ ${score} pts</div>
+    </div>
+    <div class="q-box"><p>${q.texte}</p></div>
+    <div class="choices">${btns}</div>
+    <div class="feedback" id="feedback"></div>
+  `;
+}
+
+/* ══════════════════════════════════════════
+   CHECK ANSWER
+══════════════════════════════════════════ */
+function checkAnswer(btn, choice) {
+  if (answered) return;
+  answered = true;
+
+  const q = shuffled[index];
+  const correct = q.reponse;
+  const feedback = document.getElementById("feedback");
+
+  // Disable all buttons & highlight
+  document.querySelectorAll(".choice-btn").forEach(b => {
+    b.disabled = true;
+    if (b.dataset.val === correct) b.classList.add("correct");
+  });
+
+  if (choice === correct) {
+    score++;
+    feedback.className = "feedback show ok";
+    feedback.innerHTML = `✅ Bonne réponse ! &nbsp;|&nbsp; <span style="font-weight:400">${q.explication}</span>`;
+  } else {
+    btn.classList.add("wrong");
+    feedback.className = "feedback show bad";
+    feedback.innerHTML = `❌ Mauvaise réponse ! La bonne réponse est : <strong>${correct}</strong><br><span style="font-weight:400">${q.explication}</span>`;
+  }
+
+  index++;
+  const total = shuffled.length;
+
+  setTimeout(() => {
+    if (index >= total) {
+      showResult(total);
+    } else {
+      document.getElementById("game").classList.remove("card-anim");
+      void document.getElementById("game").offsetWidth;
+      document.getElementById("game").classList.add("card-anim");
+      render();
+    }
+  }, 2000);
+}
+
+/* ══════════════════════════════════════════
+   RESULT SCREEN
+══════════════════════════════════════════ */
+function showResult(total) {
+  const pct = Math.round((score / total) * 100);
+  let trophy, rating, color;
+
+  if (pct === 100) { trophy = "🏆"; rating = "Parfait ! Tu es un champion !"; color = "#ffd700"; }
+  else if (pct >= 80) { trophy = "🥇"; rating = "Excellent travail !"; color = "#10b981"; }
+  else if (pct >= 60) { trophy = "🥈"; rating = "Bon résultat, continue !"; color = "#38bdf8"; }
+  else if (pct >= 40) { trophy = "🥉"; rating = "Pas mal, mais entraîne-toi encore !"; color = "#f59e0b"; }
+  else { trophy = "📚"; rating = "Continue à étudier, tu vas y arriver !"; color = "#a855f7"; }
+
+  document.getElementById("progress-fill").style.width = "100%";
+  document.getElementById("progress-label").textContent = total + " / " + total;
+
+  document.getElementById("game").innerHTML = `
+    <div class="result-screen">
+      <div class="trophy">${trophy}</div>
+      <h2>Résultat final</h2>
+      <div class="final-score" style="background:linear-gradient(135deg,${color},#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+        ${score} / ${total}
+      </div>
+      <div class="rating" style="color:${color}">${rating}</div>
+      <p>${pct}% de bonnes réponses</p>
+      <button class="btn btn-primary" onclick="restart()">🔄 Recommencer</button>
+    </div>
+  `;
+}
+
+function restart() {
+  index = 0; score = 0; answered = false;
+  shuffled = shuffle(jeux[currentGame].questions);
+  document.getElementById("game").classList.add("card-anim");
+  render();
+}
+
+/* ── Init ── */
+shuffled = shuffle(jeux[currentGame].questions);
+render();
+</script>
+</body>
+</html>
