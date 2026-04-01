@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jeux de Français 🇫🇷 | Verbes & Adjectifs émotionnels</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#070810;
+  --surface:#0f1020;
+  --card:#13142a;
+  --border:#1f2140;
+  --border2:#2b2f57;
+  --text:#edf0ff;
+  --muted:#8d99c9;
+  --purple:#8b5cf6;
+  --teal:#2dd4bf;
+  --green:#10b981;
+  --red:#f43f5e;
+  --gold:#f59e0b;
+  --shadow:0 30px 80px rgba(0,0,0,.45);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"DM Sans",sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(139,92,246,.18), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(45,212,191,.12), transparent 28%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding:20px 16px 60px;
+  overflow-x:hidden;
+}
+.container{
+  max-width:760px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+header{
+  text-align:center;
+  padding:26px 0 22px;
+}
+.flag{
+  font-size:2.8rem;
+  display:block;
+  margin-bottom:8px;
+  filter:drop-shadow(0 4px 12px rgba(139,92,246,.35));
+}
+h1{
+  font-family:"Syne",sans-serif;
+  font-weight:900;
+  font-size:2.55rem;
+  letter-spacing:-1px;
+  line-height:1.05;
+}
+h1 span{
+  background:linear-gradient(135deg,var(--purple),var(--teal));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.subtitle{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:.98rem;
+}
+
+.tabs{
+  display:flex;
+  gap:10px;
+  margin:14px 0 16px;
+}
+.tab{
+  flex:1;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:14px;
+  padding:13px 12px;
+  text-align:center;
+  cursor:pointer;
+  user-select:none;
+  font-family:"Syne",sans-serif;
+  font-weight:800;
+  font-size:.88rem;
+  color:var(--muted);
+  transition:.2s ease;
+}
+.tab:hover{border-color:var(--purple);color:#fff}
+.tab.active{
+  background:#1a1038;
+  border-color:var(--purple);
+  color:#fff;
+  box-shadow:0 0 18px rgba(139,92,246,.18);
+}
+
+.progress-wrap{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
+.progress{
+  flex:1;
+  height:6px;
+  background:#1a1d36;
+  border-radius:999px;
+  overflow:hidden;
+}
+.fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--purple),var(--teal));
+  border-radius:999px;
+  transition:width .35s ease;
+}
+.progress-label{
+  white-space:nowrap;
+  color:var(--muted);
+  font-size:.83rem;
+  font-weight:600;
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 12%), var(--card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:28px 24px;
+  box-shadow:var(--shadow);
+}
+.card-anim{animation:fadeUp .28s ease}
+
+.meta-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:20px;
+}
+.cat-label{
+  font-family:"Syne",sans-serif;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--purple);
+}
+.score-pill{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:999px;
+  padding:6px 14px;
+  font-family:"Syne",sans-serif;
+  font-size:.88rem;
+  font-weight:800;
+  color:var(--gold);
+}
+.combo-badge{
+  display:inline-block;
+  margin-left:8px;
+  padding:3px 10px;
+  border-radius:999px;
+  border:1px solid rgba(139,92,246,.25);
+  background:rgba(139,92,246,.12);
+  color:#d8c8ff;
+  font-size:.7rem;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.q-box{
+  position:relative;
+  overflow:hidden;
+  min-height:102px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border:1px solid var(--border);
+  background:var(--bg);
+  border-radius:18px;
+  padding:26px 20px;
+  margin-bottom:20px;
+}
+.q-box::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 240px 110px at 50% 0%, rgba(139,92,246,.08), transparent 72%);
+  pointer-events:none;
+}
+.q-box p{
+  position:relative;
+  font-size:1.3rem;
+  line-height:1.55;
+  font-weight:600;
+  color:#f2f3ff;
+}
+
+.choices{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+.choice-btn{
+  width:100%;
+  padding:13px 16px;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:12px;
+  text-align:left;
+  color:#cdd4ef;
+  font-size:.98rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:.16s ease;
+}
+.choice-btn:hover:not(:disabled){
+  border-color:var(--purple);
+  background:#171036;
+  color:#fff;
+  transform:translateX(5px);
+}
+.choice-btn.correct{
+  background:#031e12;
+  border-color:var(--green);
+  color:#fff;
+}
+.choice-btn.wrong{
+  background:#1e0310;
+  border-color:var(--red);
+  color:#fff;
+}
+.choice-btn:disabled{cursor:default}
+
+.feedback{
+  display:none;
+  margin-top:16px;
+  padding:14px 18px;
+  border-radius:14px;
+  font-size:.95rem;
+  font-weight:600;
+  animation:fadeUp .25s ease;
+}
+.feedback.show{display:block}
+.feedback.ok{
+  background:#031e12;
+  border:1px solid var(--green);
+  color:#73e2ba;
+}
+.feedback.bad{
+  background:#1e0310;
+  border:1px solid var(--red);
+  color:#ffb1bf;
+}
+.feedback .expl{
+  display:block;
+  margin-top:4px;
+  font-size:.9rem;
+  font-weight:400;
+  opacity:.92;
+}
+
+.next-btn,
+.restart-btn{
+  margin-top:14px;
+  display:inline-block;
+  border:none;
+  border-radius:12px;
+  padding:11px 24px;
+  cursor:pointer;
+  font-family:"Syne",sans-serif;
+  font-weight:800;
+  letter-spacing:.4px;
+  color:#fff;
+  background:linear-gradient(135deg,#7c3aed,#2dd4bf);
+  transition:.2s ease;
+}
+.next-btn:hover,
+.restart-btn:hover{opacity:.92;transform:translateY(-2px)}
+
+.result-screen{
+  text-align:center;
+  padding:8px 0 4px;
+}
+.trophy{
+  font-size:5rem;
+  display:block;
+  margin-bottom:8px;
+}
+.result-screen h2{
+  font-family:"Syne",sans-serif;
+  font-size:1.85rem;
+  font-weight:900;
+  margin-bottom:8px;
+}
+.final-score{
+  font-family:"Syne",sans-serif;
+  font-size:4rem;
+  font-weight:900;
+  line-height:1;
+  margin:10px 0 12px;
+  background:linear-gradient(135deg,var(--gold),#fff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.rating{
+  font-family:"Syne",sans-serif;
+  font-size:1.06rem;
+  font-weight:800;
+  margin-bottom:16px;
+}
+.result-screen p{
+  color:var(--muted);
+  margin-bottom:20px;
+  font-size:.95rem;
+}
+
+.small-note{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:.82rem;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+
+@media (max-width:480px){
+  h1{font-size:1.95rem}
+  .card{padding:20px 14px}
+  .q-box p{font-size:1.08rem}
+  .tab{padding:11px 8px;font-size:.8rem}
+  .final-score{font-size:3.25rem}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <span class="flag">🇫🇷</span>
+    <h1>Jeux de <span>Français</span></h1>
+    <div class="subtitle">Futur proche • Impératif • Émotions : verbes & adjectifs</div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" id="tab-grammaire" data-game="grammaire">🎯 Futur / Impératif</div>
+    <div class="tab" id="tab-emotions" data-game="emotions">🎭 Émotions (verbes/adjectifs)</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress"><div class="fill" id="fill"></div></div>
+    <div class="progress-label" id="progress-label">0 / 0</div>
+  </div>
+
+  <div class="card card-anim" id="game"></div>
+</div>
+
+<script>
+// GRAMMAIRE (inchangé, parfait)
+const JEUX = {
+  grammaire: {
+    category: "Grammaire",
+    options: ["Futur proche", "Impératif"],
+    questions: [
+      { diff:"facile", texte:"Je vais étudier ce soir.", reponse:"Futur proche", explication:"aller + infinitif = futur proche." },
+      { diff:"facile", texte:"Ferme la porte !", reponse:"Impératif", explication:"Ordre direct sans pronom sujet." },
+      { diff:"facile", texte:"Nous allons visiter Paris.", reponse:"Futur proche", explication:"aller + infinitif = futur proche." },
+      { diff:"facile", texte:"Ne parle pas !", reponse:"Impératif", explication:"Impératif négatif." },
+      { diff:"facile", texte:"Ils vont construire une maison.", reponse:"Futur proche", explication:"aller + infinitif = futur proche." },
+      { diff:"facile", texte:"Prenez vos cahiers.", reponse:"Impératif", explication:"Ordre à la forme de politesse." },
+      { diff:"facile", texte:"Tu vas comprendre la leçon.", reponse:"Futur proche", explication:"aller + infinitif = futur proche." },
+      { diff:"facile", texte:"Ne touchez pas à ça !", reponse:"Impératif", explication:"Impératif négatif." },
+      { diff:"moyen", texte:"Nous allons devoir travailler plus.", reponse:"Futur proche", explication:"aller + infinitif avec devoir." },
+      { diff:"moyen", texte:"Soyez attentifs.", reponse:"Impératif", explication:"Impératif de être, forme vous." },
+      { diff:"moyen", texte:"Je vais essayer une nouvelle méthode.", reponse:"Futur proche", explication:"aller + infinitif = futur proche." },
+      { diff:"moyen", texte:"N'oubliez pas vos devoirs.", reponse:"Impératif", explication:"Impératif négatif." },
+      { diff:"moyen", texte:"Tu vas finir par réussir.", reponse:"Futur proche", explication:"aller + infinitif, même avec une expression après." },
+      { diff:"moyen", texte:"Écris ton nom au tableau.", reponse:"Impératif", explication:"Ordre direct." },
+      { diff:"moyen", texte:"Nous allons prendre le bus.", reponse:"Futur proche", explication:"aller + infinitif." },
+      { diff:"moyen", texte:"Partez maintenant.", reponse:"Impératif", explication:"Ordre à la forme vous." },
+      { diff:"hard", texte:"À partir de demain, nous allons adopter une nouvelle organisation.", reponse:"Futur proche", explication:"aller + infinitif indique une action proche prévue." },
+      { diff:"hard", texte:"Veuillez patienter quelques minutes.", reponse:"Impératif", explication:"Forme polie de l'impératif." },
+      { diff:"hard", texte:"Vous allez devoir justifier votre réponse.", reponse:"Futur proche", explication:"aller + infinitif, avec devoir." },
+      { diff:"hard", texte:"Quoi que tu fasses, écoute-moi.", reponse:"Impératif", explication:"Le verbe est à l'impératif." },
+      { diff:"hard", texte:"On va bientôt commencer l'examen.", reponse:"Futur proche", explication:"aller + infinitif, action proche." },
+      { diff:"hard", texte:"Ayez confiance en vous.", reponse:"Impératif", explication:"Impératif du verbe avoir, forme vous." },
+      { diff:"hard", texte:"Dès ce soir, je vais réviser tous mes chapitres.", reponse:"Futur proche", explication:"aller + infinitif." },
+      { diff:"hard", texte:"Ne sois pas en retard.", reponse:"Impératif", explication:"Impératif du verbe être, forme tu." },
+      { diff:"hard", texte:"Ils vont probablement changer d'avis.", reponse:"Futur proche", explication:"aller + infinitif = futur proche." },
+      { diff:"hard", texte:"Faites silence, s'il vous plaît.", reponse:"Impératif", explication:"Impératif de faire, forme vous." },
+      { diff:"hard", texte:"Je vais te montrer la solution après le cours.", reponse:"Futur proche", explication:"aller + infinitif." },
+      { diff:"hard", texte:"N'insistez pas trop.", reponse:"Impératif", explication:"Impératif négatif." }
+    ]
+  },
+
+  // ÉMOTIONS : uniquement Calme / Colère / Joie / Tristesse
+  // + toutes les phrases utilisent des verbes d'émotion ou adjectifs émotionnels
+  // suppression totale de Peur et Surprise.
+  emotions: {
+    category: "Émotions (verbes/adjectifs)",
+    options: ["Calme 😌", "Colère 😡", "Joie 😊", "Tristesse 😢"],
+    questions: [
+      // === FACILE (verbes / adjectifs émotionnels clairs) ===
+      { diff:"facile", texte:"Il sourit en voyant ses amis.", reponse:"Joie 😊", explication:"Verbe 'sourire' → joie, plaisir." },
+      { diff:"facile", texte:"Elle pleure doucement.", reponse:"Tristesse 😢", explication:"Pleurer = tristesse." },
+      { diff:"facile", texte:"Il hurle de rage.", reponse:"Colère 😡", explication:"Hurler de rage → colère intense." },
+      { diff:"facile", texte:"Elle respire profondément et se détend.", reponse:"Calme 😌", explication:"Se détendre → calme, sérénité." },
+      { diff:"facile", texte:"Je suis ravi de cette nouvelle !", reponse:"Joie 😊", explication:"Adjectif 'ravi' = très heureux." },
+      { diff:"facile", texte:"Je me sens calme et apaisé.", reponse:"Calme 😌", explication:"Adjectifs 'calme, apaisé' → état paisible." },
+      { diff:"facile", texte:"Je suis furieux après cette injustice.", reponse:"Colère 😡", explication:"Adjectif 'furieux' = colère forte." },
+      { diff:"facile", texte:"Quel chagrin !", reponse:"Tristesse 😢", explication:"Nom 'chagrin' = tristesse profonde." },
+      { diff:"facile", texte:"J'ai gagné au loto !", reponse:"Joie 😊", explication:"Événement positif → joie." },
+      { diff:"facile", texte:"Mon chien est mort.", reponse:"Tristesse 😢", explication:"Perte → tristesse." },
+      { diff:"facile", texte:"Le voisin fait du bruit à 3h du matin !", reponse:"Colère 😡", explication:"Situation agaçante → colère." },
+      { diff:"facile", texte:"Je regarde les nuages passer tranquillement.", reponse:"Calme 😌", explication:"Tranquillité → calme." },
+      
+      // === MOYEN (verbes d'état + adjectifs émotionnels nuancés) ===
+      { diff:"moyen", texte:"Je suis submergée par une nostalgie inexplicable.", reponse:"Tristesse 😢", explication:"Nostalgie douloureuse → tristesse." },
+      { diff:"moyen", texte:"Je lis un livre dans mon jardin, rien ne me dérange.", reponse:"Calme 😌", explication:"Absence de perturbation → sérénité." },
+      { diff:"moyen", texte:"Cette injustice me révolte profondément.", reponse:"Colère 😡", explication:"Verbe 'révolter' = indignation forte." },
+      { diff:"moyen", texte:"Je suis aux anges depuis ce matin !", reponse:"Joie 😊", explication:"Expression 'aux anges' = bonheur intense." },
+      { diff:"moyen", texte:"Il est ravi d'apprendre la nouvelle.", reponse:"Joie 😊", explication:"Adjectif 'ravi' = joie." },
+      { diff:"moyen", texte:"Un profond chagrin l'envahit.", reponse:"Tristesse 😢", explication:"Chagrin = tristesse profonde." },
+      { diff:"moyen", texte:"Rien ne trouble sa sérénité.", reponse:"Calme 😌", explication:"Sérénité = calme absolu." },
+      { diff:"moyen", texte:"Il fulmine à cause de son comportement irrespectueux.", reponse:"Colère 😡", explication:"Fulminer = colère explosive." },
+      { diff:"moyen", texte:"Je déborde de gratitude et de bonheur ce soir.", reponse:"Joie 😊", explication:"Bonheur + gratitude = joie éclatante." },
+      { diff:"moyen", texte:"Je respire lentement et je vide mon esprit.", reponse:"Calme 😌", explication:"Respiration lente → méditation, calme." },
+      { diff:"moyen", texte:"Il serre les poings en entendant cette remarque.", reponse:"Colère 😡", explication:"Serrer les poings = signe de colère." },
+      
+      // === DIFFICILE (verbes et adjectifs littéraires, expressions nuancées) ===
+      { diff:"hard", texte:"Son visage s'assombrit, un voile de tristesse l'emporte.", reponse:"Tristesse 😢", explication:"Image poétique de tristesse accablante." },
+      { diff:"hard", texte:"Il fulmine, les poings serrés, prêt à exploser.", reponse:"Colère 😡", explication:"Fulminer + poings serrés = rage contenue." },
+      { diff:"hard", texte:"Elle rayonne, illuminée par une joie pure.", reponse:"Joie 😊", explication:"Rayonner = joie rayonnante." },
+      { diff:"hard", texte:"Il médite, en harmonie totale avec l'instant.", reponse:"Calme 😌", explication:"Harmonie intérieure = calme profond." },
+      { diff:"hard", texte:"Le vide laissé par son départ est immense.", reponse:"Tristesse 😢", explication:"Métaphore du vide = tristesse abyssale." },
+      { diff:"hard", texte:"Je fulmine à l'idée de cette trahison.", reponse:"Colère 😡", explication:"Fulminer = colère intérieure violente." },
+      { diff:"hard", texte:"Je saute de joie quand j'entends cette nouvelle.", reponse:"Joie 😊", explication:"Sauter de joie = bonheur physique." },
+      { diff:"hard", texte:"Une sérénité douce m'envahit au coucher du soleil.", reponse:"Calme 😌", explication:"Sérénité envahissante = calme absolu." },
+      { diff:"hard", texte:"Je suis en paix, assis près de la mer.", reponse:"Calme 😌", explication:"Être en paix = plénitude calme." },
+      { diff:"hard", texte:"Son visage s'illumina d'un sourire lumineux.", reponse:"Joie 😊", explication:"Sourire lumineux = joie sincère." },
+      { diff:"hard", texte:"Il explosa de colère, injuriant tout le monde.", reponse:"Colère 😡", explication:"Exploser de colère = accès de rage." },
+      { diff:"hard", texte:"La mélancolie l'étreignit sans raison.", reponse:"Tristesse 😢", explication:"Mélancolie = tristesse douce mais profonde." },
+      { diff:"hard", texte:"Je me sens léger, libéré de tout poids.", reponse:"Calme 😌", explication:"Légèreté intérieure = sérénité." },
+      { diff:"hard", texte:"Un rire franc et joyeux éclata dans la pièce.", reponse:"Joie 😊", explication:"Rire joyeux = expression de joie collective." }
+    ]
+  }
+};
+
+let currentGame = "grammaire";
+let index = 0;
+let score = 0;
+let combo = 0;
+let questions = [];
+let answered = false;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getQuestions(){
+  const qs = JEUX[currentGame].questions;
+  const easy = qs.filter(q => q.diff === "facile");
+  const medium = qs.filter(q => q.diff === "moyen");
+  const hard = qs.filter(q => q.diff === "hard");
+  return [...shuffle(easy), ...shuffle(medium), ...shuffle(hard)];
+}
+
+function setGame(game){
+  currentGame = game;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("tab-" + game).classList.add("active");
+  startGame();
+}
+
+function startGame(){
+  index = 0;
+  score = 0;
+  combo = 0;
+  answered = false;
+  questions = getQuestions();
+  animateCard();
+  render();
+}
+
+function animateCard(){
+  const card = document.getElementById("game");
+  card.classList.remove("card-anim");
+  void card.offsetWidth;
+  card.classList.add("card-anim");
+}
+
+function render(){
+  const game = JEUX[currentGame];
+  const total = questions.length;
+  const q = questions[index];
+  answered = false;
+
+  document.getElementById("fill").style.width = ((index / total) * 100) + "%";
+  document.getElementById("progress-label").textContent = (index + 1) + " / " + total;
+
+  const options = game.options.map(opt => `
+    <button class="choice-btn" data-value="${escapeHtml(opt)}">${escapeHtml(opt)}</button>
+  `).join("");
+
+  const comboBadge = combo > 1 ? `<span class="combo-badge">Combo x${combo}</span>` : "";
+
+  document.getElementById("game").innerHTML = `
+    <div class="meta-row">
+      <div class="cat-label">${game.category}${comboBadge}</div>
+      <div class="score-pill">⭐ ${score} pts</div>
+    </div>
+
+    <div class="q-box"><p>${escapeHtml(q.texte)}</p></div>
+
+    <div class="choices">${options}</div>
+
+    <div class="feedback" id="feedback"></div>
+  `;
+
+  document.querySelectorAll(".choice-btn").forEach(btn => {
+    btn.addEventListener("click", () => checkAnswer(btn));
+  });
+}
+
+function checkAnswer(btn){
+  if(answered) return;
+  answered = true;
+
+  const q = questions[index];
+  const choice = btn.dataset.value;
+  const correct = q.reponse;
+  const feedback = document.getElementById("feedback");
+  const total = questions.length;
+
+  document.querySelectorAll(".choice-btn").forEach(b => {
+    b.disabled = true;
+    if(b.dataset.value === correct) b.classList.add("correct");
+  });
+
+  index++;
+
+  if(choice === correct){
+    combo++;
+    score += 1 + Math.min(combo, 3);
+    feedback.className = "feedback show ok";
+    feedback.innerHTML = `✅ Bonne réponse !<span class="expl">${escapeHtml(q.explication)}</span><button class="next-btn" id="nextBtn">${index >= total ? "Voir le résultat →" : "Suivante →"}</button>`;
+  } else {
+    combo = 0;
+    btn.classList.add("wrong");
+    feedback.className = "feedback show bad";
+    feedback.innerHTML = `❌ La bonne réponse est : <strong>${escapeHtml(correct)}</strong><span class="expl">${escapeHtml(q.explication)}</span><button class="next-btn" id="nextBtn">${index >= total ? "Voir le résultat →" : "Suivante →"}</button>`;
+  }
+
+  document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+}
+
+function nextQuestion(){
+  if(index >= questions.length){
+    showResult();
+  } else {
+    animateCard();
+    render();
+  }
+}
+
+function showResult(){
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let trophy = "📚";
+  let rating = "Continue à étudier, tu vas y arriver !";
+  let color = "#8b5cf6";
+
+  if(pct === 100){
+    trophy = "🏆";
+    rating = "Parfait ! Tu es un champion des émotions !";
+    color = "#f59e0b";
+  } else if(pct >= 80){
+    trophy = "🥇";
+    rating = "Excellent travail !";
+    color = "#10b981";
+  } else if(pct >= 60){
+    trophy = "🥈";
+    rating = "Très bien !";
+    color = "#38bdf8";
+  } else if(pct >= 40){
+    trophy = "🥉";
+    rating = "Pas mal, continue !";
+    color = "#f59e0b";
+  }
+
+  document.getElementById("fill").style.width = "100%";
+  document.getElementById("progress-label").textContent = total + " / " + total;
+
+  document.getElementById("game").innerHTML = `
+    <div class="result-screen">
+      <span class="trophy">${trophy}</span>
+      <h2>Résultat final</h2>
+      <div class="final-score" style="background:linear-gradient(135deg,${color},#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${score} / ${total}</div>
+      <div class="rating" style="color:${color}">${rating}</div>
+      <p>${pct}% de bonnes réponses</p>
+      <button class="restart-btn" id="restartBtn">🔄 Recommencer</button>
+      <div class="small-note">✨ Chaque phrase contient un verbe ou adjectif d'émotion. Identifie le sentiment !</div>
+    </div>
+  `;
+
+  document.getElementById("restartBtn").addEventListener("click", startGame);
+
+  if(pct === 100){
+    setTimeout(() => {
+      for(let i = 0; i < 18; i++){
+        setTimeout(confettiBurst, i * 80);
+      }
+    }, 250);
+  }
+}
+
+function confettiBurst(){
+  const p = document.createElement("div");
+  const size = 8 + Math.random() * 8;
+  const colors = ["#8b5cf6","#2dd4bf","#f59e0b","#f43f5e","#ffffff"];
+
+  p.style.position = "fixed";
+  p.style.left = (50 + (Math.random() * 34 - 17)) + "vw";
+  p.style.top = "20vh";
+  p.style.width = size + "px";
+  p.style.height = size + "px";
+  p.style.borderRadius = "50%";
+  p.style.background = colors[Math.floor(Math.random() * colors.length)];
+  p.style.zIndex = 9999;
+  p.style.pointerEvents = "none";
+  document.body.appendChild(p);
+
+  const dx = (Math.random() - 0.5) * 320;
+  const dy = 260 + Math.random() * 420;
+  const rot = (Math.random() - 0.5) * 720;
+  const duration = 900 + Math.random() * 900;
+  const start = performance.now();
+
+  function frame(now){
+    const t = Math.min((now - start) / duration, 1);
+    p.style.transform = `translate(${dx * t}px, ${dy * t}px) rotate(${rot * t}deg)`;
+    p.style.opacity = String(1 - t);
+    if(t < 1){
+      requestAnimationFrame(frame);
+    } else {
+      p.remove();
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+
+document.addEventListener("keydown", (e) => {
+  const n = parseInt(e.key, 10);
+  if(n >= 1 && n <= 4){
+    const btns = [...document.querySelectorAll(".choice-btn")];
+    if(btns[n - 1] && !btns[n - 1].disabled){
+      btns[n - 1].click();
+    }
+  }
+});
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => setGame(tab.dataset.game));
+});
+
+startGame();
+</script>
+</body>
+</html>
